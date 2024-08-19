@@ -1,0 +1,28 @@
+server:
+  port: 9000
+
+logging:
+  level:
+    my.restaurant: DEBUG
+
+spring:
+  application:
+    name: delivery-api
+  datasource:
+    url: jdbc:postgresql://localhost:5332/foodhub_db
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+
+
+
+
+
