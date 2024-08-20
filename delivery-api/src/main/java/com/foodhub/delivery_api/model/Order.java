@@ -2,12 +2,10 @@ package com.foodhub.delivery_api.model;
 
 import com.foodhub.delivery_api.enums.OrderStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.Formula;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,30 +20,20 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "order_time")
-    @NotNull
+    @Column(name = "order_time", nullable = false)
     private LocalDateTime orderTime;
 
     @Column(name = "is_paid")
     private boolean isPaid;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull
     private OrderStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_food",
-            joinColumns = @JoinColumn(name = "order_id", referencedColumnName="id"),
-            inverseJoinColumns = @JoinColumn(name = "food_id", referencedColumnName="id")
-    )
-    private List<Food> foods;
-
-    @Formula("(SELECT SUM(f.price) FROM food f JOIN order_food of ON f.id = of.food_id WHERE of.order_id = id)")
-    private BigDecimal totalAmount;
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

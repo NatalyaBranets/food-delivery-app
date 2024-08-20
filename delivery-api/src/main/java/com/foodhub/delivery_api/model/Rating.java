@@ -1,7 +1,6 @@
 package com.foodhub.delivery_api.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,23 +22,21 @@ public class Rating {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "rating")
-    @NotNull
+    @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(name = "rating_date")
-    @NotNull
+    @Column(name = "rating_date", nullable = false)
     private LocalDateTime ratingDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
     @OneToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 }

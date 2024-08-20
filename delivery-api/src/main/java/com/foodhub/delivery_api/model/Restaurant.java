@@ -1,7 +1,6 @@
 package com.foodhub.delivery_api.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,16 +17,13 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    @NotNull
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "address")
-    @NotNull
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "phone")
-    @NotNull
+    @Column(name = "phone", nullable = false)
     private String phone;
     
 }

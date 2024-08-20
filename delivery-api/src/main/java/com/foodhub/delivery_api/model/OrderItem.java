@@ -9,33 +9,27 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "foods")
+@Table(name = "order_items")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Food {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "image")
-    private byte[] image;
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "food_id", nullable = false)
+    private Food food;
 
     @ManyToOne
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 }

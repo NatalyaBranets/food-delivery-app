@@ -1,15 +1,13 @@
 server:
   port: 9000
-
-logging:
-  level:
-    my.restaurant: DEBUG
+  error:
+    path: /error
 
 spring:
   application:
     name: delivery-api
   datasource:
-    url: jdbc:postgresql://localhost:5332/foodhub_db
+    url: jdbc:postgresql://172.17.0.2:5432/foodhub_db
     username: admin
     password: admin
   jpa:
