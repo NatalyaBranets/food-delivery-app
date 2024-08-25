@@ -7,9 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "roles")
 @Getter
@@ -25,7 +22,4 @@ public class Role {
     @Column(name = "name", nullable = false)
     @Enumerated(EnumType.STRING)
     private RoleType name;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "roles")
-    private List<User> users = new ArrayList<>();
 }
