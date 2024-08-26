@@ -1,16 +1,16 @@
 # Food-Delivery-App
 
 ### Technologies:
-- Java 17,
-- PostgreSQL Database,
-- Spring Boot 3.2.8,
-- Spring Data JPA,
-- Spring Security,
-- JSON Web Tokens (JWT),
-- BCrypt,
-- Postman,
-- Docker,
-- Maven.
+- Java 17
+- PostgreSQL Database
+- Spring Boot 3.2.8
+- Spring Data JPA
+- Spring Security
+- JSON Web Tokens (JWT)
+- BCrypt
+- Postman
+- Docker
+- Maven
 
 ### Database Design for a Food Delivery App:
 
