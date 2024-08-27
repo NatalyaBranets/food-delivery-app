@@ -5,6 +5,8 @@ import com.foodhub.delivery_api.dto.AuthenticationRequest;
 import com.foodhub.delivery_api.dto.AuthenticationResponse;
 import com.foodhub.delivery_api.dto.RegisterUserRequestDTO;
 import com.foodhub.delivery_api.enums.RoleType;
+import com.foodhub.delivery_api.exception.AlreadyExistsException;
+import com.foodhub.delivery_api.exception.PasswordMatchException;
 import com.foodhub.delivery_api.model.Role;
 import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.repository.RoleRepository;
@@ -13,6 +15,7 @@ import com.foodhub.delivery_api.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,11 +39,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse register(RegisterUserRequestDTO request) {
         // validate registration form
         if (!request.password().equals(request.confirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+            throw new PasswordMatchException("Password and confirm password does not match.");
         }
         Optional<User> userOptional = this.userRepository.findByEmail(request.email());
         if (userOptional.isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new AlreadyExistsException(String.format("Email %s already exists", request.email()));
         }
 
         // create user
@@ -74,7 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
         User user = this.userRepository.findByEmail(request.username())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", request.username())));
         // generate token to send as response to user
         String jwtToken = this.jwtService.generateToken(user);
 
