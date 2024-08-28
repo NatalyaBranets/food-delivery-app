@@ -18,6 +18,8 @@
    - Password encryption using BCrypt
    - Role-based authorization with Spring Security
    - Customized access denied handling.
+**2. Exception Handler:**
+   - Used @ControllerAdvice and @ExceptionHandler for global exception handling
 
 ### Database Design for a Food Delivery App:
 
