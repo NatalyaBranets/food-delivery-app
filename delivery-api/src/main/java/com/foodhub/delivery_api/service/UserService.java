@@ -1,9 +1,7 @@
 package com.foodhub.delivery_api.service;
 
-import com.foodhub.delivery_api.model.User;
-
-import java.util.List;
+import com.foodhub.delivery_api.dto.UsersDataDTO;
 
 public interface UserService {
-    List<User> getAllUsers(Integer page);
+    UsersDataDTO getAllUsers(Integer page);
 }
