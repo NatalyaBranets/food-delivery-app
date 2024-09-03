@@ -7,7 +7,7 @@
 - Spring Data JPA
 - Spring Security
 - JSON Web Tokens (JWT)
-- BCrypt
+- Flyway
 - Postman
 - Docker
 - Maven
@@ -19,8 +19,9 @@
    - Role-based authorization with Spring Security
    - Customized access denied handling.
      
-**2. Exception Handler:**
-   - Used @ControllerAdvice and @ExceptionHandler for global exception handling
+**2. Global Exception Handler**
+
+**3. Simplified Database Migrations with Flyway**
 
 ### Database Design for a Food Delivery App:
 
