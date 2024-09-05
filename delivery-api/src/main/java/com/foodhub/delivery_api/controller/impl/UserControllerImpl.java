@@ -1,6 +1,7 @@
 package com.foodhub.delivery_api.controller.impl;
 
 import com.foodhub.delivery_api.controller.UserController;
+import com.foodhub.delivery_api.dto.UserDTO;
 import com.foodhub.delivery_api.dto.UsersDataDTO;
 import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.service.UserService;
@@ -21,11 +22,11 @@ public class UserControllerImpl implements UserController {
     private UserService userService;
 
     @Override
-    @GetMapping("/me")
-    public ResponseEntity<User> authenticatedUser() {
+    @GetMapping("/profile")
+    public ResponseEntity<UserDTO> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(currentUser);
+        User authenticatedUser = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(new UserDTO(authenticatedUser));
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class User implements UserDetails {
     @Id
-    @SequenceGenerator(name = "usr_id_seq_gen", sequenceName = "usr_id_seq")
+    @SequenceGenerator(name = "usr_id_seq_gen", sequenceName = "usr_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usr_id_seq_gen")
     private Long id;
 
