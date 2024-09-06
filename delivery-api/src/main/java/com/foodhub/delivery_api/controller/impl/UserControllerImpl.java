@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -31,8 +28,11 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping
-    public ResponseEntity<UsersDataDTO> getAllUsers(@RequestParam(name = "page", defaultValue = "1") Integer page) {
-        UsersDataDTO usersData = this.userService.getAllUsers(page);
-        return ResponseEntity.ok(usersData);
+    public ResponseEntity<UsersDataDTO> getAllUsers(@RequestParam(name = "page", defaultValue = "1") Integer page,
+                                                    @RequestParam(name = "query", defaultValue = "") String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return ResponseEntity.ok(this.userService.getAllUsers(page));
+        }
+        return ResponseEntity.ok(this.userService.searchUsers(query, page));
     }
 }

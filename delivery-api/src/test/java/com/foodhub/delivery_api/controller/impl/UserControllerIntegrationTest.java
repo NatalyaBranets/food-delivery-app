@@ -63,6 +63,34 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser
+    public void testGetAllUsersWithQuery() throws Exception {
+        // prepare test data
+        Integer page = 1;
+        String searchRequest = "Andriy";
+        LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("page", String.valueOf(page));
+        requestParams.add("query", searchRequest);
+
+        // act
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .get("/v1/users")
+                        .params(requestParams)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.totalElements").value(0))
+                .andExpect(jsonPath("$.totalPages").value(0))
+                .andExpect(jsonPath("$.currentPage").value(1))
+                .andExpect(jsonPath("$.isFirst").value(true))
+                .andExpect(jsonPath("$.isLast").value(true))
+                .andExpect(jsonPath("$.hasNext").value(false))
+                .andExpect(jsonPath("$.hasPrevious").value(false))
+                .andExpect(jsonPath("$.data.length()").value(0));
+    }
+
+    @Test
     @WithUserDetails(value = "admin@gmail.com")
     public void authenticatedUser() throws Exception {
         // act

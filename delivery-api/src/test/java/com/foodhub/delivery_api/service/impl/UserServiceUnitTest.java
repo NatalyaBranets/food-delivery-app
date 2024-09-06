@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = TestBeansConfiguration.class)
@@ -43,6 +44,33 @@ public class UserServiceUnitTest {
 
         // act
         UsersDataDTO actual = this.userService.getAllUsers(page);
+
+        // assert
+        Assertions.assertEquals(expected.totalPages(), actual.totalPages());
+        Assertions.assertEquals(expected.currentPage(), actual.currentPage());
+        Assertions.assertEquals(expected.hasNext(), actual.hasNext());
+        Assertions.assertEquals(expected.hasPrevious(), actual.hasPrevious());
+        Assertions.assertEquals(expected.totalPages(), actual.totalPages());
+        Assertions.assertEquals(expected.isFirst(), actual.isFirst());
+        Assertions.assertEquals(expected.isLast(), actual.isLast());
+        Assertions.assertEquals(expected.data().size(), actual.data().size());
+    }
+
+    @Test
+    public void testSearchUsersSuccess() throws Exception {
+        // prepare test data
+        int page = 1;
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        String searchRequest = "1234";
+
+        List<UserDTO> users = new ArrayList<>();
+        Page<UserDTO> userDTOsPage = new PageImpl<>(users, pageRequest, users.size());
+        when(this.userRepository.searchUsers(eq(searchRequest), any(PageRequest.class))).thenReturn(userDTOsPage);
+
+        UsersDataDTO expected = new UsersDataDTO(userDTOsPage);
+
+        // act
+        UsersDataDTO actual = this.userService.searchUsers(searchRequest, page);
 
         // assert
         Assertions.assertEquals(expected.totalPages(), actual.totalPages());

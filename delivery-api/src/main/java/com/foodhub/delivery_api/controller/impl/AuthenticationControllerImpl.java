@@ -5,6 +5,7 @@ import com.foodhub.delivery_api.dto.AuthenticationResponse;
 import com.foodhub.delivery_api.dto.RegisterUserRequestDTO;
 import com.foodhub.delivery_api.dto.AuthenticationRequest;
 import com.foodhub.delivery_api.service.AuthenticationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @Override
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterUserRequestDTO request) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid RegisterUserRequestDTO request) {
         AuthenticationResponse response = this.authenticationService.register(request);
         return ResponseEntity.ok(response);
     }

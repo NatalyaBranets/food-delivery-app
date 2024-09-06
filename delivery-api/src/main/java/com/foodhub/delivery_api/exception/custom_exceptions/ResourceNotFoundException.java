@@ -1,4 +1,4 @@
-package com.foodhub.delivery_api.exception;
+package com.foodhub.delivery_api.exception.custom_exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
 

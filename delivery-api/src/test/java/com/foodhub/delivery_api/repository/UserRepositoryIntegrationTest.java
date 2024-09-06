@@ -36,7 +36,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    public void findUsers() {
+    public void testFindUsers() {
         // prepare test data
         PageRequest pageRequest = PageRequest.of(1, 10);
 
@@ -45,6 +45,19 @@ public class UserRepositoryIntegrationTest {
 
         // assert
         assertEquals(1, actual.getTotalPages());
+    }
+
+    @Test
+    public void testSearchUsers() {
+        // prepare test data
+        String searchRequest = "1234";
+        PageRequest pageRequest = PageRequest.of(1, 10);
+
+        // act
+        Page<UserDTO> actual = this.userRepository.searchUsers(searchRequest, pageRequest);
+
+        // assert
+        assertEquals(0, actual.getTotalPages());
     }
 
 }

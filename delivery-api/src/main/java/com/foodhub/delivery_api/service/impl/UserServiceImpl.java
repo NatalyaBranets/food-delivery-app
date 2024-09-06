@@ -24,4 +24,13 @@ public class UserServiceImpl implements UserService {
         Page<UserDTO> userDTOsPage = this.userRepository.findUsers(pageRequest);
         return new UsersDataDTO(userDTOsPage);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UsersDataDTO searchUsers(String query, Integer page) {
+        int pageNo = page < 1 ? 1 : page - 1;
+        PageRequest pageRequest = PageRequest.of(pageNo, 10);
+        Page<UserDTO> userDTOsPage = this.userRepository.searchUsers(query, pageRequest);
+        return new UsersDataDTO(userDTOsPage);
+    }
 }

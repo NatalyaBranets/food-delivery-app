@@ -13,6 +13,17 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+
     @Query("select new com.foodhub.delivery_api.dto.UserDTO(u.id, u.firstName, u.lastName, u.email, u.phone, u.address) from User u")
     Page<UserDTO> findUsers(Pageable pageable);
+
+    @Query("""
+            select new com.foodhub.delivery_api.dto.UserDTO(u.id, u.firstName, u.lastName, u.email, u.phone, u.address) from User u
+            where lower(u.firstName) like lower(concat('%', :query, '%'))
+            or lower(u.lastName) like lower(concat('%', :query, '%'))
+            or lower(u.address) like lower(concat('%', :query, '%'))
+            or lower(u.email) like lower(concat('%', :query, '%'))
+            or lower(u.phone) like lower(concat('%', :query, '%'))
+            """)
+    Page<UserDTO> searchUsers(String query, Pageable pageable);
 }

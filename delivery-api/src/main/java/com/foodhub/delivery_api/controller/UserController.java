@@ -6,5 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserController {
     ResponseEntity<UserDTO> authenticatedUser();
-    ResponseEntity<UsersDataDTO> getAllUsers(Integer page);
+    ResponseEntity<UsersDataDTO> getAllUsers(Integer page, String query);
 }
