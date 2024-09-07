@@ -1,0 +1,40 @@
+version: '3.1'
+services:
+  postgres:
+    image: postgres:16.4
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=foodhub_db
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin4
+    depends_on:
+      - postgres
+
+  backend:
+    container_name: food-delivery-api
+    image: nbranets/food-delivery-api
+    build:
+      context: delivery-api
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/foodhub_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "9000:9000"
+    restart: always
+    depends_on:
+      - postgres
