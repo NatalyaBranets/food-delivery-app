@@ -1,6 +1,6 @@
 # Food-Delivery-App
 
-### Technologies:
+## Technologies:
 - Java 17
 - PostgreSQL Database
 - Spring Boot 3.2.8
@@ -17,35 +17,36 @@
 - Maven
 
 
-### Run:
-1. Create database foodhub_db:
-CREATE DATABASE IF NOT EXISTS foodhub_db;
+## Run:
 
-2. Run app command:
-   - delivery-api$ mvn spring-boot:run
+```shell
+$ git clone https://github.com/NatalyaBranets/food-delivery-app.git
+$ cd food-delivery-app
+$ chmod +x run.sh
+$ ./run.sh start
+$ ./run.sh stop
+```
 
-3. Open Postman and run commands from postman collection:
-   - delivery-api/foodhub.postman_collection.json 
-
-   Don't forget to update jwt token in authenticated http requests. You can receive it with:
+Open Postman and run http requests from 'delivery-api/foodhub.postman_collection.json'. 
+Don't forget to update jwt token in authenticated http requests. You can receive it with:
    - POST http://localhost:9000/foodhub/v1/auth/login
    - POST http://localhost:9000/foodhub/v1/auth/register
 
-   Default user: "username": "admin@gmail.com", "password": "admin"
+Default user: "username": "admin@gmail.com", "password": "admin"
 
 
-### Features:
-**1. Security:**
+## Features:
+1. Security:
    - User registration and login with JWT authentication
    - Password encryption using BCrypt
    - Role-based authorization with Spring Security
    - Customized access denied handling.
-     
-**2. Global Exception Handler**
+   
+2. Global Exception Handler
 
-**3. Simplified Database Migrations with Flyway**
+3. Simplified Database Migrations with Flyway
 
-**4. Unit and Integration tests**
+4. Unit and Integration tests
 
 
 ### Database Design for a Food Delivery App:
