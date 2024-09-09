@@ -1,4 +1,4 @@
-package com.foodhub.delivery_api.controller.impl;
+package com.foodhub.delivery_api.controller;
 
 import com.foodhub.delivery_api.TestBeansConfiguration;
 import com.foodhub.delivery_api.dto.AuthenticationRequest;

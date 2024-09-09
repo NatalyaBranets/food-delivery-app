@@ -1,6 +1,6 @@
 package com.foodhub.delivery_api.model;
 
-import com.foodhub.delivery_api.enums.RoleType;
+import com.foodhub.delivery_api.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,5 +21,5 @@ public class Role {
 
     @Column(name = "name", nullable = false)
     @Enumerated(EnumType.STRING)
-    private RoleType name;
+    private UserRole name;
 }

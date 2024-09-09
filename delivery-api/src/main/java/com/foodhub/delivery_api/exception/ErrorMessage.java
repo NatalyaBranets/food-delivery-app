@@ -2,6 +2,7 @@ package com.foodhub.delivery_api.exception;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class ErrorMessage {
     private int statusCode;
     private Date timestamp;
     private String message;
-    private List<FieldViolation> violations;
+    private List<FieldViolation> violations = new ArrayList<>();
     private String description;
 
     public ErrorMessage(int statusCode, Date timestamp, String message, List<FieldViolation> violations, String description) {

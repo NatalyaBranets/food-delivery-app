@@ -1,5 +1,5 @@
 package com.foodhub.delivery_api.enums;
 
-public enum RoleType {
+public enum UserRole {
     USER, ADMIN
 }

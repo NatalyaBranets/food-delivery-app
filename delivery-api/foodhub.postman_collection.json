@@ -16,7 +16,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MjU1MzA3OTcsImV4cCI6MTcyNTUzMjU5N30.lR0t739Zt6EMSr8_IlI30-eNvlOVxBZxXpaeSy77fwU",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -55,7 +55,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MjU1MzA3OTcsImV4cCI6MTcyNTUzMjU5N30.lR0t739Zt6EMSr8_IlI30-eNvlOVxBZxXpaeSy77fwU",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -83,6 +83,166 @@
 			"response": []
 		},
 		{
+			"name": "http://localhost:9000/foodhub/v1/users/7",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"Katya\",\r\n    \"lastName\":\"Octavin\",\r\n    \"password\":\"katya7\",\r\n    \"confirmPassword\":\"katya7\",\r\n    \"phone\":\"+380673123111\",\r\n    \"email\": \"katya@gmail.com\",\r\n    \"address\":\"Kyiv\",\r\n    \"roles\": [\r\n        \"USER\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9000/foodhub/v1/users/7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"foodhub",
+						"v1",
+						"users",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:9000/foodhub/v1/users/9",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:9000/foodhub/v1/users/9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"foodhub",
+						"v1",
+						"users",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:9000/foodhub/v1/users/1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:9000/foodhub/v1/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"foodhub",
+						"v1",
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:9000/foodhub/v1/users?query=Andr",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:9000/foodhub/v1/users?query=Andr1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"foodhub",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "Andr1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "http://localhost:9000/foodhub/v1/auth/register",
 			"request": {
 				"auth": {
@@ -92,7 +252,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"firstName\": \"Andriy\",\r\n    \"lastName\":\"Lee\",\r\n    \"email\":\"andriy@gmail.com\",\r\n    \"password\":\"andriy\",\r\n    \"confirmPassword\":\"andriy\",\r\n    \"phone\":\"+3805657778\",\r\n    \"address\":\"Lviv\"\r\n}",
+					"raw": "{\r\n    \"firstName\": \"Katya\",\r\n    \"lastName\":\"Katya\",\r\n    \"password\":\"katya\",\r\n    \"confirmPassword\":\"katya\",\r\n    \"email\": \"katya@gmail.com\",\r\n    \"phone\":\"+380673123333\",\r\n    \"address\":\"Lviv\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -149,6 +309,32 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
 		}
 	]
 }

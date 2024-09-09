@@ -4,7 +4,7 @@ import com.foodhub.delivery_api.config.JwtService;
 import com.foodhub.delivery_api.dto.AuthenticationRequest;
 import com.foodhub.delivery_api.dto.AuthenticationResponse;
 import com.foodhub.delivery_api.dto.RegisterUserRequestDTO;
-import com.foodhub.delivery_api.enums.RoleType;
+import com.foodhub.delivery_api.enums.UserRole;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.exception.custom_exceptions.PasswordMatchException;
 import com.foodhub.delivery_api.model.Role;
@@ -55,7 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setAddress(request.address());
         user.setPhone(request.phone());
 
-        Optional<Role> optionalRole = this.roleRepository.findByName(RoleType.USER);
+        Optional<Role> optionalRole = this.roleRepository.findByName(UserRole.USER);
         optionalRole.ifPresent(role -> user.setRoles(new HashSet<>() {{
             add(role);
         }}));

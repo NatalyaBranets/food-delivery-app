@@ -5,7 +5,7 @@ import com.foodhub.delivery_api.config.JwtService;
 import com.foodhub.delivery_api.dto.AuthenticationRequest;
 import com.foodhub.delivery_api.dto.AuthenticationResponse;
 import com.foodhub.delivery_api.dto.RegisterUserRequestDTO;
-import com.foodhub.delivery_api.enums.RoleType;
+import com.foodhub.delivery_api.enums.UserRole;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.exception.custom_exceptions.PasswordMatchException;
 import com.foodhub.delivery_api.model.Role;
@@ -90,9 +90,9 @@ public class AuthenticationServiceUnitTest {
         when(this.passwordEncoder.encode(request.password())).thenReturn(encodedPassword);
 
         Role roleUser = new Role();
-        roleUser.setName(RoleType.USER);
+        roleUser.setName(UserRole.USER);
         roleUser.setId(1L);
-        when(this.roleRepository.findByName(RoleType.USER)).thenReturn(Optional.of(roleUser));
+        when(this.roleRepository.findByName(UserRole.USER)).thenReturn(Optional.of(roleUser));
 
         User user = new User();
         user.setFirstName(firstName);

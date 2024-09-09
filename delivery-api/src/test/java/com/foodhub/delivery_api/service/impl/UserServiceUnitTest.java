@@ -1,8 +1,12 @@
 package com.foodhub.delivery_api.service.impl;
 
 import com.foodhub.delivery_api.TestBeansConfiguration;
+import com.foodhub.delivery_api.dto.UpdateUserRequestDTO;
 import com.foodhub.delivery_api.dto.UserDTO;
 import com.foodhub.delivery_api.dto.UsersDataDTO;
+import com.foodhub.delivery_api.enums.UserRole;
+import com.foodhub.delivery_api.model.Role;
+import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,12 +19,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = TestBeansConfiguration.class)
 @ExtendWith(MockitoExtension.class)
@@ -54,6 +58,7 @@ public class UserServiceUnitTest {
         Assertions.assertEquals(expected.isFirst(), actual.isFirst());
         Assertions.assertEquals(expected.isLast(), actual.isLast());
         Assertions.assertEquals(expected.data().size(), actual.data().size());
+        verify(this.userRepository, times(1)).findUsers(any(PageRequest.class));
     }
 
     @Test
@@ -81,6 +86,130 @@ public class UserServiceUnitTest {
         Assertions.assertEquals(expected.isFirst(), actual.isFirst());
         Assertions.assertEquals(expected.isLast(), actual.isLast());
         Assertions.assertEquals(expected.data().size(), actual.data().size());
+        verify(this.userRepository, times(1)).searchUsers(eq(searchRequest), any(PageRequest.class));
+    }
+
+    @Test
+    public void testGetUserByIdSuccess() throws Exception {
+        // prepare test data
+        Long id = 1L;
+        String firstName = "Anna";
+        String lastName = "Lee";
+        String email = "anna@gmail.com";
+        String password =  "45$3tTThytIOtyf";
+        String phone = "+380666666666";
+        String address ="Kyiv";
+        Set<Role> roles = new HashSet<>() {{
+            add(new Role(1L, UserRole.USER));
+        }};
+
+        User user = new User();
+        user.setId(id);
+        user.setRoles(roles);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setAddress(address);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPassword(password);
+
+        when(this.userRepository.findById(id)).thenReturn(Optional.of(user));
+
+        UserDTO expected = new UserDTO(id, firstName, lastName, email, phone, address);
+
+        // act
+        UserDTO actual = this.userService.getUserById(id);
+
+        // assert
+        Assertions.assertEquals(expected, actual);
+        verify(this.userRepository, times(1)).findById(id);
+    }
+
+    @Test
+    public void testGetUserByIdNoSuchElementException() throws Exception {
+        // prepare test data
+        Long id = 10L;
+
+        String expectedMessage = String.format("User with id - %s not found", id);
+
+        // act and assert
+        Exception exception = Assertions.assertThrows(NoSuchElementException.class, () -> {
+            this.userService.getUserById(id);
+        });
+
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testUpdateUserNoSuchElementException() throws Exception {
+        // prepare test data
+        Long id = 1L;
+
+        String firstName = "Anna";
+        String lastName = "Lee";
+        String email = "anna@gmail.com";
+        String password =  "anna";
+        String confirmPassword =  "anna";
+        String phone = "+380666666666";
+        String address ="Kyiv";
+        Set<UserRole> roles = new HashSet<>() {{
+            add(UserRole.USER);
+        }};
+        UpdateUserRequestDTO request = new UpdateUserRequestDTO(firstName, lastName, email, password
+                , confirmPassword, phone, address, roles);
+
+        String expectedMessage = String.format("User %s does not exists", request.firstName());
+
+        // act and assert
+        Exception exception = Assertions.assertThrows(NoSuchElementException.class, () -> {
+            this.userService.updateUser(id, request);
+        });
+
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void testDeleteUserSuccess() throws Exception {
+        // prepare test data
+        Long id = 10L;
+
+        User user = new User();
+        user.setId(id);
+        when(this.userRepository.findById(id)).thenReturn(Optional.of(user));
+
+        doNothing().when(this.userRepository).deleteById(id);
+
+        // act
+        this.userService.deleteUser(id);
+
+        // assert
+        verify(this.userRepository, times(1)).findById(id);
+        verify(this.userRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    public void testDeleteUserNoSuchElementException() throws Exception {
+        // prepare test data
+        Long id = 10L;
+
+        when(this.userRepository.findById(id)).thenReturn(Optional.empty());
+
+        String expectedMessage = String.format("User with id - %s not found", id);
+
+        // act and assert
+        Exception exception = Assertions.assertThrows(NoSuchElementException.class, () -> {
+            this.userService.deleteUser(id);
+        });
+
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+        verify(this.userRepository, times(1)).findById(id);
+        verify(this.userRepository, times(0)).deleteById(id);
     }
 
 }

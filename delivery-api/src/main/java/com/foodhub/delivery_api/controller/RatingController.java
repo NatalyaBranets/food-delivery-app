@@ -1,6 +1,13 @@
 package com.foodhub.delivery_api.controller;
 
 import com.foodhub.delivery_api.service.RatingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-public interface RatingController {
+@RestController
+@RequestMapping("/v1/ratings")
+public class RatingController {
+    @Autowired
+    private RatingService ratingService;
 }
