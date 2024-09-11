@@ -18,7 +18,7 @@ public class ErrorMessage {
         this.statusCode = statusCode;
         this.timestamp = timestamp;
         this.message = message;
-        this.violations = violations;
+        this.violations.addAll(violations);
         this.description = description;
     }
 

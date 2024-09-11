@@ -1,9 +1,9 @@
 package com.foodhub.delivery_api.service.impl;
 
 import com.foodhub.delivery_api.config.JwtService;
-import com.foodhub.delivery_api.dto.AuthenticationRequest;
-import com.foodhub.delivery_api.dto.AuthenticationResponse;
-import com.foodhub.delivery_api.dto.RegisterUserRequestDTO;
+import com.foodhub.delivery_api.dto.auth.AuthenticationRequest;
+import com.foodhub.delivery_api.dto.auth.AuthenticationResponse;
+import com.foodhub.delivery_api.dto.auth.RegisterUserRequestDTO;
 import com.foodhub.delivery_api.enums.UserRole;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.exception.custom_exceptions.PasswordMatchException;

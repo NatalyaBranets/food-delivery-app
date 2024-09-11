@@ -1,8 +1,8 @@
 package com.foodhub.delivery_api.repository;
 
 import com.foodhub.delivery_api.TestBeansConfiguration;
-import com.foodhub.delivery_api.dto.user.UserDTO;
-import com.foodhub.delivery_api.model.User;
+import com.foodhub.delivery_api.dto.restaurant.RestaurantDTO;
+import com.foodhub.delivery_api.model.Restaurant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -10,38 +10,42 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {TestBeansConfiguration.class})
-public class UserRepositoryIntegrationTest {
-
+@Sql(scripts={"classpath:test-data/create_restaurants.sql"}, executionPhase = BEFORE_TEST_METHOD)
+public class RestaurantRepositoryIntegrationTest {
     @Autowired
-    private UserRepository userRepository;
+    private RestaurantRepository restaurantRepository;
 
     @Test
-    public void testFindByEmail() {
+    public void testFindByNameAndAddress() {
         // prepare test data
-        String email = "admin@gmail.com";
+        String name = "Macdonals";
+        String address = "Lviv. Chornovola st";
 
         // act
-        Optional<User> optionalUser = this.userRepository.findByEmail(email);
+        Optional<Restaurant> optionalRestaurant = this.restaurantRepository.findByNameAndAddress(name, address);
 
         // assert
-        assertTrue(optionalUser.isPresent());
+        assertTrue(optionalRestaurant.isPresent());
     }
 
     @Test
-    public void testFindUsers() {
+    public void testFindRestaurants() {
         // prepare test data
         PageRequest pageRequest = PageRequest.of(1, 10);
 
         // act
-        Page<UserDTO> actual = this.userRepository.findUsers(pageRequest);
+        Page<RestaurantDTO> actual = this.restaurantRepository.findRestaurants(pageRequest);
 
         // assert
         assertEquals(1, actual.getTotalPages());
@@ -54,7 +58,7 @@ public class UserRepositoryIntegrationTest {
         PageRequest pageRequest = PageRequest.of(1, 10);
 
         // act
-        Page<UserDTO> actual = this.userRepository.findUsersByQuery(searchRequest, pageRequest);
+        Page<RestaurantDTO> actual = this.restaurantRepository.findRestaurantsByQuery(searchRequest, pageRequest);
 
         // assert
         assertEquals(0, actual.getTotalPages());

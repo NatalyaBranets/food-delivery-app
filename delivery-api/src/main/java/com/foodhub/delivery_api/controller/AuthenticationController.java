@@ -1,8 +1,8 @@
 package com.foodhub.delivery_api.controller;
 
-import com.foodhub.delivery_api.dto.AuthenticationResponse;
-import com.foodhub.delivery_api.dto.RegisterUserRequestDTO;
-import com.foodhub.delivery_api.dto.AuthenticationRequest;
+import com.foodhub.delivery_api.dto.auth.AuthenticationResponse;
+import com.foodhub.delivery_api.dto.auth.RegisterUserRequestDTO;
+import com.foodhub.delivery_api.dto.auth.AuthenticationRequest;
 import com.foodhub.delivery_api.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

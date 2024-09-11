@@ -1,0 +1,2 @@
+insert into restaurants (id, name, address, phone) values (1, 'Macdonals', 'Lviv. Chornovola st', '+30677777777');
+insert into restaurants (id, name, address, phone) values (2, 'Macdonals', 'Lviv. V.Velykoho st', '+30677777333');

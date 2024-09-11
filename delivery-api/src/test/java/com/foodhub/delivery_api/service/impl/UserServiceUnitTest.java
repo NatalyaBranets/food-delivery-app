@@ -1,9 +1,9 @@
 package com.foodhub.delivery_api.service.impl;
 
 import com.foodhub.delivery_api.TestBeansConfiguration;
-import com.foodhub.delivery_api.dto.UpdateUserRequestDTO;
-import com.foodhub.delivery_api.dto.UserDTO;
-import com.foodhub.delivery_api.dto.UsersDataDTO;
+import com.foodhub.delivery_api.dto.user.UpdateUserRequestDTO;
+import com.foodhub.delivery_api.dto.user.UserDTO;
+import com.foodhub.delivery_api.dto.user.UsersDataDTO;
 import com.foodhub.delivery_api.enums.UserRole;
 import com.foodhub.delivery_api.model.Role;
 import com.foodhub.delivery_api.model.User;
@@ -59,6 +59,7 @@ public class UserServiceUnitTest {
         Assertions.assertEquals(expected.isLast(), actual.isLast());
         Assertions.assertEquals(expected.data().size(), actual.data().size());
         verify(this.userRepository, times(1)).findUsers(any(PageRequest.class));
+        verifyNoMoreInteractions(this.userRepository);
     }
 
     @Test
@@ -70,7 +71,7 @@ public class UserServiceUnitTest {
 
         List<UserDTO> users = new ArrayList<>();
         Page<UserDTO> userDTOsPage = new PageImpl<>(users, pageRequest, users.size());
-        when(this.userRepository.searchUsers(eq(searchRequest), any(PageRequest.class))).thenReturn(userDTOsPage);
+        when(this.userRepository.findUsersByQuery(eq(searchRequest), any(PageRequest.class))).thenReturn(userDTOsPage);
 
         UsersDataDTO expected = new UsersDataDTO(userDTOsPage);
 
@@ -86,7 +87,8 @@ public class UserServiceUnitTest {
         Assertions.assertEquals(expected.isFirst(), actual.isFirst());
         Assertions.assertEquals(expected.isLast(), actual.isLast());
         Assertions.assertEquals(expected.data().size(), actual.data().size());
-        verify(this.userRepository, times(1)).searchUsers(eq(searchRequest), any(PageRequest.class));
+        verify(this.userRepository, times(1)).findUsersByQuery(eq(searchRequest), any(PageRequest.class));
+        verifyNoMoreInteractions(this.userRepository);
     }
 
     @Test
@@ -123,6 +125,7 @@ public class UserServiceUnitTest {
         // assert
         Assertions.assertEquals(expected, actual);
         verify(this.userRepository, times(1)).findById(id);
+        verifyNoMoreInteractions(this.userRepository);
     }
 
     @Test
@@ -189,6 +192,7 @@ public class UserServiceUnitTest {
         // assert
         verify(this.userRepository, times(1)).findById(id);
         verify(this.userRepository, times(1)).deleteById(id);
+        verifyNoMoreInteractions(this.userRepository);
     }
 
     @Test
@@ -209,7 +213,7 @@ public class UserServiceUnitTest {
 
         assertTrue(actualMessage.contains(expectedMessage));
         verify(this.userRepository, times(1)).findById(id);
-        verify(this.userRepository, times(0)).deleteById(id);
+        verifyNoMoreInteractions(this.userRepository);
     }
 
 }

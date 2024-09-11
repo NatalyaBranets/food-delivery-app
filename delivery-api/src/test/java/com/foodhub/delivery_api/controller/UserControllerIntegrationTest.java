@@ -1,7 +1,7 @@
 package com.foodhub.delivery_api.controller;
 
 import com.foodhub.delivery_api.TestBeansConfiguration;
-import com.foodhub.delivery_api.dto.UpdateUserRequestDTO;
+import com.foodhub.delivery_api.dto.user.UpdateUserRequestDTO;
 import com.foodhub.delivery_api.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -62,7 +62,8 @@ create table restaurants (
     name    varchar(255) not null,
     address varchar(255) not null,
     phone   varchar(255) not null,
-    primary key (id)
+    primary key (id),
+    unique (name, address)
 );
 
 create table roles (

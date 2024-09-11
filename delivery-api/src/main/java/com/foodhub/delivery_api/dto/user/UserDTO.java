@@ -1,4 +1,4 @@
-package com.foodhub.delivery_api.dto;
+package com.foodhub.delivery_api.dto.user;
 
 import com.foodhub.delivery_api.model.User;
 
@@ -11,8 +11,7 @@ public record UserDTO (
     String address
 ) {
     public UserDTO(User user) {
-        this(
-                user.getId(),
+        this(user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),

@@ -1,8 +1,8 @@
 package com.foodhub.delivery_api.controller;
 
 import com.foodhub.delivery_api.TestBeansConfiguration;
-import com.foodhub.delivery_api.dto.AuthenticationRequest;
-import com.foodhub.delivery_api.dto.RegisterUserRequestDTO;
+import com.foodhub.delivery_api.dto.auth.AuthenticationRequest;
+import com.foodhub.delivery_api.dto.auth.RegisterUserRequestDTO;
 import com.foodhub.delivery_api.exception.FieldViolation;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.repository.UserRepository;

@@ -1,8 +1,8 @@
 package com.foodhub.delivery_api.service.impl;
 
-import com.foodhub.delivery_api.dto.UpdateUserRequestDTO;
-import com.foodhub.delivery_api.dto.UserDTO;
-import com.foodhub.delivery_api.dto.UsersDataDTO;
+import com.foodhub.delivery_api.dto.user.UpdateUserRequestDTO;
+import com.foodhub.delivery_api.dto.user.UserDTO;
+import com.foodhub.delivery_api.dto.user.UsersDataDTO;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.exception.custom_exceptions.PasswordMatchException;
 import com.foodhub.delivery_api.model.Role;
@@ -46,11 +46,12 @@ public class UserServiceImpl implements UserService {
     public UsersDataDTO searchUsers(String query, Integer page) {
         int pageNo = page < 1 ? 1 : page - 1;
         PageRequest pageRequest = PageRequest.of(pageNo, 10);
-        Page<UserDTO> userDTOsPage = this.userRepository.searchUsers(query, pageRequest);
+        Page<UserDTO> userDTOsPage = this.userRepository.findUsersByQuery(query, pageRequest);
         return new UsersDataDTO(userDTOsPage);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
         if (userOptional.isPresent()) {

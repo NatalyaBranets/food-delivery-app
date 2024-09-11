@@ -2,9 +2,9 @@ package com.foodhub.delivery_api.service.impl;
 
 import com.foodhub.delivery_api.TestBeansConfiguration;
 import com.foodhub.delivery_api.config.JwtService;
-import com.foodhub.delivery_api.dto.AuthenticationRequest;
-import com.foodhub.delivery_api.dto.AuthenticationResponse;
-import com.foodhub.delivery_api.dto.RegisterUserRequestDTO;
+import com.foodhub.delivery_api.dto.auth.AuthenticationRequest;
+import com.foodhub.delivery_api.dto.auth.AuthenticationResponse;
+import com.foodhub.delivery_api.dto.auth.RegisterUserRequestDTO;
 import com.foodhub.delivery_api.enums.UserRole;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.exception.custom_exceptions.PasswordMatchException;
@@ -27,7 +27,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 
 @SpringBootTest(classes = TestBeansConfiguration.class)
@@ -69,6 +70,10 @@ public class AuthenticationServiceUnitTest {
 
         // assert
         Assertions.assertEquals(expected, actual);
+        verify(this.authenticationManager, times(1)).authenticate(authentication);
+        verify(this.userRepository, times(1)).findByEmail(username);
+        verify(this.jwtService, times(1)).generateToken(user);
+        verifyNoMoreInteractions(this.authenticationManager, this.jwtService, this.userRepository);
     }
 
     @Test
@@ -113,6 +118,12 @@ public class AuthenticationServiceUnitTest {
 
         // assert
         Assertions.assertEquals(expected, actual);
+        verify(this.userRepository, times(1)).findByEmail(username);
+        verify(this.passwordEncoder, times(1)).encode(request.password());
+        verify(this.roleRepository, times(1)).findByName(UserRole.USER);
+        verify(this.userRepository, times(1)).save(any(User.class));
+        verify(this.jwtService, times(1)).generateToken(any(User.class));
+        verifyNoMoreInteractions(this.userRepository, this.jwtService, this.passwordEncoder, this.roleRepository);
     }
 
     @Test
@@ -149,6 +160,8 @@ public class AuthenticationServiceUnitTest {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
+        verify(this.userRepository, times(1)).findByEmail(username);
+        verifyNoMoreInteractions(this.userRepository);
     }
 
     @Test

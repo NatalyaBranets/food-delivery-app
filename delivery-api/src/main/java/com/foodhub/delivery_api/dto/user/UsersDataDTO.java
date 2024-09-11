@@ -1,4 +1,4 @@
-package com.foodhub.delivery_api.dto;
+package com.foodhub.delivery_api.dto.user;
 
 import org.springframework.data.domain.Page;
 

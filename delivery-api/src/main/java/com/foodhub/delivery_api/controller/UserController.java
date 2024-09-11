@@ -1,8 +1,8 @@
 package com.foodhub.delivery_api.controller;
 
-import com.foodhub.delivery_api.dto.UpdateUserRequestDTO;
-import com.foodhub.delivery_api.dto.UserDTO;
-import com.foodhub.delivery_api.dto.UsersDataDTO;
+import com.foodhub.delivery_api.dto.user.UpdateUserRequestDTO;
+import com.foodhub.delivery_api.dto.user.UserDTO;
+import com.foodhub.delivery_api.dto.user.UsersDataDTO;
 import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.service.UserService;
 import jakarta.validation.Valid;
