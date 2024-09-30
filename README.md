@@ -1,4 +1,14 @@
 # Food-Delivery-App
+REST API food delivery application allows users to order food and rate each restaurant. The app is built using Java Java with Spring Boot 3 and PostgreSQL database.
+
+## Features:
+1. User Security: Implemented JWT (JSON Web Tokens) for secure user authentication and authorization. Users can register, log in, and access their account. Passwords are encrypted using BCrypt.
+
+2. Global Exception Handler: Created a centralized exception handler that can handle exceptions thrown by controllers in my application. Used @ControllerAdvice and @ExceptionHandler. 
+
+3. DB Migration: Used Flyway tool that automates the execution of migration scripts by eliminating the need for manual intervention and helping in precise version control. To reduce complexity, I placed migration scripts into separate folders based on their purpose.
+
+4. Tests: Implemented Unit and Integration tests for controller, service and repository levels.
 
 ## Technologies:
 - Java 17
@@ -35,16 +45,5 @@ Don't forget to update jwt token in authenticated http requests. You can receive
 Default user: "username": "admin@gmail.com", "password": "admin"
 
 
-## Features:
-1. Security:
-   - User registration and login with JWT authentication
-   - Password encryption using BCrypt
-   - Role-based authorization with Spring Security
-   - Customized access denied handling.
-   
-2. Global Exception Handler
 
-3. Simplified Database Migrations with Flyway
-
-4. Unit and Integration tests
 
