@@ -1,5 +1,5 @@
 # Food-Delivery-App
-REST API food delivery application allows users to order food and rate each restaurant. 
+REST API Online food delivery application allows users to order food and rate each restaurant.
 
 ## Features:
 1. User Security: Implemented JWT (JSON Web Tokens) for secure user authentication and authorization. Users can register, log in, and access their account. Passwords are encrypted using BCrypt.
