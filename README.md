@@ -3,11 +3,8 @@ REST API Online food delivery application allows users to order food and rate ea
 
 ## Features:
 1. User Security: Implemented JWT (JSON Web Tokens) for secure user authentication and authorization. Users can register, log in, and access their account. Passwords are encrypted using BCrypt.
-
 2. Global Exception Handler: Created a centralized exception handler that can handle exceptions thrown by controllers in my application. Used @ControllerAdvice and @ExceptionHandler. 
-
 3. DB Migration: Used Flyway tool that automates the execution of migration scripts by eliminating the need for manual intervention and helping in precise version control. To reduce complexity, I placed migration scripts into separate folders based on their purpose.
-
 4. Tests: Implemented Unit and Integration tests for controller, service and repository levels.
 
 ## Technologies:
