@@ -9,5 +9,5 @@ public interface UserService {
     UsersDataDTO searchUsers(String query, Integer page);
     UserDTO getUserById(Long id);
     UserDTO updateUser(Long id, UpdateUserRequestDTO request);
-    void deleteUser(Long id);
+    UserDTO deactivateUser(Long id);
 }

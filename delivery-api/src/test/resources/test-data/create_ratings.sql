@@ -1,0 +1,2 @@
+insert into ratings (id, description, rating, rating_date, user_id, restaurant_id) values (1,'good', 8, '2024-01-02 00:30:00+00', 1, 1);
+insert into ratings (id, description, rating, rating_date, user_id, restaurant_id) values (2, 'nice', 9, '2024-04-05 00:30:00+00', 1, 2);

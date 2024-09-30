@@ -1,5 +1,7 @@
 package com.foodhub.delivery_api.controller;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.foodhub.delivery_api.TestBeansConfiguration;
 import com.foodhub.delivery_api.dto.auth.AuthenticationRequest;
 import com.foodhub.delivery_api.dto.auth.RegisterUserRequestDTO;
@@ -7,6 +9,7 @@ import com.foodhub.delivery_api.exception.FieldViolation;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,6 +45,14 @@ public class AuthenticationControllerIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    private static ObjectMapper mapper;
+
+    @BeforeAll
+    static void setUp() {
+        mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    }
+
     @AfterEach
     void cleanUpEach() {
         this.userRepository.deleteAll();
@@ -55,7 +66,7 @@ public class AuthenticationControllerIntegrationTest {
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/auth/login")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -70,7 +81,7 @@ public class AuthenticationControllerIntegrationTest {
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/auth/login")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
@@ -82,27 +93,27 @@ public class AuthenticationControllerIntegrationTest {
     @Test
     public void testRegisterSuccess() throws Exception {
         // prepare test data
-        RegisterUserRequestDTO request = new RegisterUserRequestDTO( "Anna", "Lee", "anna@gmail.com", "anna", "anna", "+380666666666", "Lviv");
+        RegisterUserRequestDTO request = new RegisterUserRequestDTO( "Anna", "Lee", "anna@gmail.com", "anna", "anna", "0666666666", "Lviv");
 
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/auth/register")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.token").exists());
     }
 
     @Test
     public void testRegisterDuplicatedEmail() throws Exception {
         // prepare test data
-        RegisterUserRequestDTO request = new RegisterUserRequestDTO("Anna", "Lee", EMAIL_VALID, "anna", "anna", "+380666666666", "Lviv");
+        RegisterUserRequestDTO request = new RegisterUserRequestDTO("Anna", "Lee", EMAIL_VALID, "anna", "anna", "0666666666", "Lviv");
 
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/auth/register")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -119,15 +130,15 @@ public class AuthenticationControllerIntegrationTest {
         // act
         String responseString = this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/auth/register")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Validation error"))
                 .andReturn().getResponse().getContentAsString();
 
-        Map<String, Object> responseAsMap = new ObjectMapper().readValue(responseString, new TypeReference<Map<String, Object>>() {});
-        List<FieldViolation> violations = new ObjectMapper().convertValue(responseAsMap.get("violations"), new TypeReference<List<FieldViolation>>() {});
+        Map<String, Object> responseAsMap = mapper.readValue(responseString, new TypeReference<Map<String, Object>>() {});
+        List<FieldViolation> violations = mapper.convertValue(responseAsMap.get("violations"), new TypeReference<List<FieldViolation>>() {});
 
         List<FieldViolation> sortedViolationsByField = violations.stream()
                 .sorted(Comparator.comparing(FieldViolation::getField))

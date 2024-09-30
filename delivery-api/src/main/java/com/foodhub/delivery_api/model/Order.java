@@ -30,10 +30,21 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+
+    public void addOrderItem(OrderItem item) {
+        item.setOrder(this);
+        this.orderItems.add(item);
+    }
+
+    public void removeOrderItem(OrderItem item) {
+        this.orderItems.remove(item);
+        item.setOrder(null);
+    }
 }

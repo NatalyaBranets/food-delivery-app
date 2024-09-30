@@ -1,0 +1,2 @@
+insert into orders (id, order_time, is_paid, status, user_id) values ('8805c848-b7a4-41e4-90d5-b9b4cf9a9a5b', '2024-01-02 00:30:00+00', true, 'PROCESSING', 1);
+insert into orders (id, order_time, is_paid, status, user_id) values ('50c3a35d-2c40-4987-a9dd-7aaa987a79b4', '2024-01-03 00:30:00+00', true, 'PROCESSING', 1);

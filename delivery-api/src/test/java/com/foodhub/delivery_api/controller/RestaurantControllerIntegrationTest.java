@@ -1,5 +1,7 @@
 package com.foodhub.delivery_api.controller;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.foodhub.delivery_api.TestBeansConfiguration;
 import com.foodhub.delivery_api.dto.restaurant.CreateRestaurantRequestDTO;
 import com.foodhub.delivery_api.dto.restaurant.RestaurantDTO;
@@ -7,6 +9,7 @@ import com.foodhub.delivery_api.exception.FieldViolation;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.model.Restaurant;
 import com.foodhub.delivery_api.repository.RestaurantRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,6 +48,14 @@ public class RestaurantControllerIntegrationTest {
     @MockBean
     private RestaurantRepository restaurantRepository;
 
+    private static ObjectMapper mapper;
+
+    @BeforeAll
+    static void setUp() {
+        mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    }
+
     @Test
     public void testCreateRestaurantSuccess() throws Exception {
         // prepare test data
@@ -59,7 +70,7 @@ public class RestaurantControllerIntegrationTest {
         restaurant.setName(name);
         restaurant.setAddress(address);
 
-        when(this.restaurantRepository.findByNameAndAddress(name, address)).thenReturn(Optional.empty());
+        when(this.restaurantRepository.existsByNameAndAddress(name, address)).thenReturn(false);
         when(this.restaurantRepository.save(any(Restaurant.class))).thenReturn(restaurant);
 
         CreateRestaurantRequestDTO request = new CreateRestaurantRequestDTO(name, address, phone);
@@ -67,7 +78,7 @@ public class RestaurantControllerIntegrationTest {
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/restaurants")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -77,7 +88,7 @@ public class RestaurantControllerIntegrationTest {
                 .andExpect(jsonPath("$.address").value(address))
                 .andExpect(jsonPath("$.phone").value(phone));
 
-        verify(this.restaurantRepository, times(1)).findByNameAndAddress(name, address);
+        verify(this.restaurantRepository, times(1)).existsByNameAndAddress(name, address);
         verify(this.restaurantRepository, times(1)).save(any(Restaurant.class));
         verifyNoMoreInteractions(this.restaurantRepository);
     }
@@ -91,12 +102,12 @@ public class RestaurantControllerIntegrationTest {
         String address = "Lviv";
         CreateRestaurantRequestDTO request = new CreateRestaurantRequestDTO(name, address, phone);
 
-        when(this.restaurantRepository.findByNameAndAddress(name, address)).thenReturn(Optional.of(new Restaurant(id, name, address, phone)));
+        when(this.restaurantRepository.existsByNameAndAddress(name, address)).thenReturn(true);
 
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/restaurants")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -104,7 +115,7 @@ public class RestaurantControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message")
                         .value(String.format("Restaurant %s with address %s already exists", request.name(), request.address())));
 
-        verify(this.restaurantRepository, times(1)).findByNameAndAddress(name, address);
+        verify(this.restaurantRepository, times(1)).existsByNameAndAddress(name, address);
         verifyNoMoreInteractions(this.restaurantRepository);
     }
 
@@ -116,15 +127,15 @@ public class RestaurantControllerIntegrationTest {
         // act
         String responseString = this.mockMvc.perform(MockMvcRequestBuilders
                         .post("/v1/restaurants")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Validation error"))
                 .andReturn().getResponse().getContentAsString();
 
-        Map<String, Object> responseAsMap = new ObjectMapper().readValue(responseString, new TypeReference<Map<String, Object>>() {});
-        List<FieldViolation> violations = new ObjectMapper().convertValue(responseAsMap.get("violations"), new TypeReference<List<FieldViolation>>() {});
+        Map<String, Object> responseAsMap = mapper.readValue(responseString, new TypeReference<Map<String, Object>>() {});
+        List<FieldViolation> violations = mapper.convertValue(responseAsMap.get("violations"), new TypeReference<List<FieldViolation>>() {});
 
         List<FieldViolation> sortedViolationsByField = violations.stream()
                 .sorted(Comparator.comparing(FieldViolation::getField))
@@ -244,14 +255,14 @@ public class RestaurantControllerIntegrationTest {
 
         Restaurant restaurant = new Restaurant(id, name, "Kyiv", phone);
         when(this.restaurantRepository.findById(id)).thenReturn(Optional.of(restaurant));
-        when(this.restaurantRepository.findByNameAndAddress(name, address)).thenReturn(Optional.empty());
+        when(this.restaurantRepository.existsByNameAndAddress(name, address)).thenReturn(false);
         Restaurant updatedRestaurant = new Restaurant(id, name, address, phone);
         when(this.restaurantRepository.save(restaurant)).thenReturn(updatedRestaurant);
 
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
                         .put("/v1/restaurants/" + id)
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -262,27 +273,8 @@ public class RestaurantControllerIntegrationTest {
                 .andExpect(jsonPath("$.phone").value(phone));
 
         verify(this.restaurantRepository, times(1)).findById(id);
-        verify(this.restaurantRepository, times(1)).findByNameAndAddress(name, address);
+        verify(this.restaurantRepository, times(1)).existsByNameAndAddress(name, address);
         verify(this.restaurantRepository, times(1)).save(restaurant);
-        verifyNoMoreInteractions(this.restaurantRepository);
-    }
-
-    @Test
-    public void testDeleteRestaurant() throws Exception {
-        // prepare test data
-        long id = 1L;
-        when(this.restaurantRepository.findById(id)).thenReturn(Optional.of(new Restaurant()));
-        doNothing().when(this.restaurantRepository).deleteById(id);
-
-        // act
-        this.mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/v1/restaurants/" + id)
-                        .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isNoContent());
-
-        verify(this.restaurantRepository, times(1)).findById(id);
-        verify(this.restaurantRepository, times(1)).deleteById(id);
         verifyNoMoreInteractions(this.restaurantRepository);
     }
 }

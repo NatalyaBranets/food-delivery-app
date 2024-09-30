@@ -1,6 +1,8 @@
 package com.foodhub.delivery_api.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,20 +25,18 @@ public class Rating {
     private String description;
 
     @Column(name = "rating", nullable = false)
+    @Min(1)
+    @Max(10)
     private Integer rating;
 
     @Column(name = "rating_date", nullable = false)
     private LocalDateTime ratingDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
-
-    @OneToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
 }

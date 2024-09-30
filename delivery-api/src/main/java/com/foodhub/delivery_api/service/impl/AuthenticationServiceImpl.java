@@ -15,14 +15,17 @@ import com.foodhub.delivery_api.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private UserRepository userRepository;
@@ -54,6 +57,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPassword(this.passwordEncoder.encode(request.password()));
         user.setAddress(request.address());
         user.setPhone(request.phone());
+        user.setActive(true);
 
         Optional<Role> optionalRole = this.roleRepository.findByName(UserRole.USER);
         optionalRole.ifPresent(role -> user.setRoles(new HashSet<>() {{
@@ -70,16 +74,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        this.authenticationManager.authenticate(
+        Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.username(), request.password()
                 )
         );
-        User user = this.userRepository.findByEmail(request.username())
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", request.username())));
+
         // generate token to send as response to user
-        String jwtToken = this.jwtService.generateToken(user);
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        String jwtToken = this.jwtService.generateToken(principal);
 
         return new AuthenticationResponse(jwtToken);
     }

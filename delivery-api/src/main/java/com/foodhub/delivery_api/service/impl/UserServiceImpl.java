@@ -5,6 +5,7 @@ import com.foodhub.delivery_api.dto.user.UserDTO;
 import com.foodhub.delivery_api.dto.user.UsersDataDTO;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.exception.custom_exceptions.PasswordMatchException;
+import com.foodhub.delivery_api.exception.custom_exceptions.ResourceNotFoundException;
 import com.foodhub.delivery_api.model.Role;
 import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.repository.RoleRepository;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -53,13 +53,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {
-        Optional<User> userOptional = this.userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User userToUpdate = userOptional.get();
-            return new UserDTO(userToUpdate);
-        } else {
-            throw new NoSuchElementException(String.format("User with id - %s not found", id));
-        }
+        User user = this.userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id - %s not found", id)));
+        return new UserDTO(user);
     }
 
     @Override
@@ -97,19 +93,23 @@ public class UserServiceImpl implements UserService {
             userToUpdate.setFirstName(request.firstName());
             userToUpdate.setLastName(request.lastName());
 
+            // update
             User save = this.userRepository.save(userToUpdate);
             return new UserDTO(save);
         } else {
-            throw new NoSuchElementException(String.format("User %s does not exists", request.firstName()));
+            throw new ResourceNotFoundException(String.format("User %s does not exists", request.firstName()));
         }
     }
 
     @Override
-    public void deleteUser(Long id) {
-        Optional<User> userOptional = this.userRepository.findById(id);
-        if (userOptional.isEmpty()) {
-            throw new NoSuchElementException(String.format("User with id - %s not found", id));
-        }
-        this.userRepository.deleteById(id);
+    public UserDTO deactivateUser(Long id) {
+        User user = this.userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id - %s not found", id)));
+
+        user.setActive(false);
+
+        // update
+        User savedUser = this.userRepository.save(user);
+        return new UserDTO(savedUser);
     }
 }

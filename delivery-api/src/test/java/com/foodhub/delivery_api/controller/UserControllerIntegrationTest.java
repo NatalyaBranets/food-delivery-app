@@ -1,8 +1,11 @@
 package com.foodhub.delivery_api.controller;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.foodhub.delivery_api.TestBeansConfiguration;
 import com.foodhub.delivery_api.dto.user.UpdateUserRequestDTO;
 import com.foodhub.delivery_api.enums.UserRole;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,14 @@ public class UserControllerIntegrationTest {
     @Autowired
     private WebApplicationContext applicationContext;
 
+
+    private static ObjectMapper mapper;
+
+    @BeforeAll
+    static void setUp() {
+        mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    }
 
     @BeforeEach
     public void setup() {
@@ -152,7 +163,7 @@ public class UserControllerIntegrationTest {
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
                         .put("/v1/users/1")
-                        .content(new ObjectMapper().writeValueAsString(request))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -167,12 +178,12 @@ public class UserControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = "admin@gmail.com")
-    public void testDeleteUser() throws Exception {
+    public void testDeactivateUser() throws Exception {
         // act
         this.mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/v1/users/1")
+                        .patch("/v1/users/1/deactivate")
                         .accept(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 }

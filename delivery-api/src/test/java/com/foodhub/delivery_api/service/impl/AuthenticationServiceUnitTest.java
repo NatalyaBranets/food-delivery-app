@@ -20,7 +20,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -54,14 +57,17 @@ public class AuthenticationServiceUnitTest {
         String username = "test@gmail.com";
         String password = "test";
         AuthenticationRequest request = new AuthenticationRequest(username, password);
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
-        when(this.authenticationManager.authenticate(authentication)).thenReturn(authentication);
 
         User user = new User();
-        when(this.userRepository.findByEmail(username)).thenReturn(Optional.of(user));
+        user.setActive(true);
+        user.setEmail(username);
+        user.setPassword(password);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user, request);
+        when(this.authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
 
         String jwtToken = "jwtToken";
-        when(this.jwtService.generateToken(user)).thenReturn(jwtToken);
+        when(this.jwtService.generateToken(any(UserDetails.class))).thenReturn(jwtToken);
 
         AuthenticationResponse expected = new AuthenticationResponse(jwtToken);
 
@@ -70,11 +76,32 @@ public class AuthenticationServiceUnitTest {
 
         // assert
         Assertions.assertEquals(expected, actual);
-        verify(this.authenticationManager, times(1)).authenticate(authentication);
-        verify(this.userRepository, times(1)).findByEmail(username);
-        verify(this.jwtService, times(1)).generateToken(user);
+        verify(this.authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(this.jwtService, times(1)).generateToken(any(UserDetails.class));
         verifyNoMoreInteractions(this.authenticationManager, this.jwtService, this.userRepository);
     }
+
+    @Test
+    public void testAuthenticateFailed() throws Exception {
+        // prepare test data
+        String username = "test@gmail.com";
+        String password = "test";
+        AuthenticationRequest request = new AuthenticationRequest(username, password);
+
+        String expected = "Invalid credentials";
+        when(authenticationManager.authenticate(any(Authentication.class)))
+                .thenThrow(new BadCredentialsException(expected));
+
+        // act
+        Exception exception = Assertions.assertThrows(BadCredentialsException.class, () -> {
+            this.authenticationService.authenticate(request);
+        });
+        String actualMessage = exception.getMessage();
+
+        // assert
+        assertTrue(actualMessage.contains(expected));
+    }
+
 
     @Test
     public void testRegisterSuccess() throws Exception {
@@ -106,6 +133,7 @@ public class AuthenticationServiceUnitTest {
         user.setPassword(encodedPassword);
         user.setAddress(address);
         user.setPhone(phone);
+        user.setActive(true);
         when(this.userRepository.save(any(User.class))).thenReturn(user);
 
         String jwtToken = "jwtToken";
@@ -147,6 +175,7 @@ public class AuthenticationServiceUnitTest {
         user.setPassword(encodedPassword);
         user.setAddress(address);
         user.setPhone(phone);
+        user.setActive(true);
 
         when(this.userRepository.findByEmail(username)).thenReturn(Optional.of(user));
 

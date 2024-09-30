@@ -1,5 +1,6 @@
 package com.foodhub.delivery_api.config;
 
+import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> this.userRepository.findByEmail(username)
+                .filter(User::isActive)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", username)));
     }
 

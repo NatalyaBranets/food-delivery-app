@@ -1,5 +1,6 @@
 package com.foodhub.delivery_api.model;
 
+import com.foodhub.delivery_api.enums.FoodCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,11 +32,11 @@ public class Food {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @Column(name = "category", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FoodCategory category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 }

@@ -1,7 +1,5 @@
 package com.foodhub.delivery_api.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.foodhub.delivery_api.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,8 +7,6 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonSerialize
 public record UpdateUserRequestDTO (
         @Size(min = 3, max = 30, message = "Invalid First Name: Must be of 3 - 30 characters")
         @NotEmpty(message = "First name should not be empty")

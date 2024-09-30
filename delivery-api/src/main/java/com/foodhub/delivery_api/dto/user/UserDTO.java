@@ -8,7 +8,8 @@ public record UserDTO (
     String lastName,
     String email,
     String phone,
-    String address
+    String address,
+    boolean isActive
 ) {
     public UserDTO(User user) {
         this(user.getId(),
@@ -16,7 +17,8 @@ public record UserDTO (
                 user.getLastName(),
                 user.getEmail(),
                 user.getPhone(),
-                user.getAddress()
+                user.getAddress(),
+                user.isActive()
         );
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -33,16 +34,16 @@ public class RestaurantRepositoryIntegrationTest {
         String address = "Lviv. Chornovola st";
 
         // act
-        Optional<Restaurant> optionalRestaurant = this.restaurantRepository.findByNameAndAddress(name, address);
+        boolean actual = this.restaurantRepository.existsByNameAndAddress(name, address);
 
         // assert
-        assertTrue(optionalRestaurant.isPresent());
+        assertTrue(actual);
     }
 
     @Test
     public void testFindRestaurants() {
         // prepare test data
-        PageRequest pageRequest = PageRequest.of(1, 10);
+        PageRequest pageRequest = PageRequest.of(1, 10, Sort.Direction.ASC, "name");
 
         // act
         Page<RestaurantDTO> actual = this.restaurantRepository.findRestaurants(pageRequest);
@@ -52,16 +53,28 @@ public class RestaurantRepositoryIntegrationTest {
     }
 
     @Test
-    public void testFindUsersByQuery() {
+    public void testFindRestaurantsByQuery() {
         // prepare test data
         String searchRequest = "1234";
-        PageRequest pageRequest = PageRequest.of(1, 10);
+        PageRequest pageRequest = PageRequest.of(1, 10, Sort.Direction.ASC, "name");
 
         // act
         Page<RestaurantDTO> actual = this.restaurantRepository.findRestaurantsByQuery(searchRequest, pageRequest);
 
         // assert
         assertEquals(0, actual.getTotalPages());
+    }
+
+    @Test
+    public void testExistsRestaurantById() {
+        // prepare test data
+        Long restaurantId = 1L;
+
+        // act
+        boolean actual = this.restaurantRepository.existsRestaurantById(restaurantId);
+
+        // assert
+        assertTrue(actual);
     }
 
 }

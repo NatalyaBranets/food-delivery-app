@@ -26,5 +26,4 @@ public class Restaurant {
 
     @Column(name = "phone", nullable = false)
     private String phone;
-    
 }

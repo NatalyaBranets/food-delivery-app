@@ -7,7 +7,6 @@ import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,9 +48,9 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id) {
-        this.userService.deleteUser(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<UserDTO> deactivateUser(@PathVariable("id") Long id) {
+        UserDTO userDTO = this.userService.deactivateUser(id);
+        return ResponseEntity.ok(userDTO);
     }
 }

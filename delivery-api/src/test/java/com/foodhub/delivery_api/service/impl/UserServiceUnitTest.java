@@ -5,6 +5,7 @@ import com.foodhub.delivery_api.dto.user.UpdateUserRequestDTO;
 import com.foodhub.delivery_api.dto.user.UserDTO;
 import com.foodhub.delivery_api.dto.user.UsersDataDTO;
 import com.foodhub.delivery_api.enums.UserRole;
+import com.foodhub.delivery_api.exception.custom_exceptions.ResourceNotFoundException;
 import com.foodhub.delivery_api.model.Role;
 import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.repository.UserRepository;
@@ -114,10 +115,11 @@ public class UserServiceUnitTest {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
+        user.setActive(true);
 
         when(this.userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        UserDTO expected = new UserDTO(id, firstName, lastName, email, phone, address);
+        UserDTO expected = new UserDTO(id, firstName, lastName, email, phone, address, true);
 
         // act
         UserDTO actual = this.userService.getUserById(id);
@@ -129,14 +131,14 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    public void testGetUserByIdNoSuchElementException() throws Exception {
+    public void testGetUserByIdResourceNotFoundException() throws Exception {
         // prepare test data
         Long id = 10L;
 
         String expectedMessage = String.format("User with id - %s not found", id);
 
         // act and assert
-        Exception exception = Assertions.assertThrows(NoSuchElementException.class, () -> {
+        Exception exception = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             this.userService.getUserById(id);
         });
 
@@ -146,7 +148,7 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    public void testUpdateUserNoSuchElementException() throws Exception {
+    public void testUpdateUserResourceNotFoundException() throws Exception {
         // prepare test data
         Long id = 1L;
 
@@ -166,7 +168,7 @@ public class UserServiceUnitTest {
         String expectedMessage = String.format("User %s does not exists", request.firstName());
 
         // act and assert
-        Exception exception = Assertions.assertThrows(NoSuchElementException.class, () -> {
+        Exception exception = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             this.userService.updateUser(id, request);
         });
 
@@ -176,27 +178,32 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    public void testDeleteUserSuccess() throws Exception {
+    public void testDeactivateUserSuccess() throws Exception {
         // prepare test data
         Long id = 10L;
 
         User user = new User();
         user.setId(id);
+        user.setActive(true);
         when(this.userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        doNothing().when(this.userRepository).deleteById(id);
+        user.setActive(false);
+        when(this.userRepository.save(user)).thenReturn(user);
+
+        UserDTO expected = new UserDTO(user);
 
         // act
-        this.userService.deleteUser(id);
+        UserDTO actual = this.userService.deactivateUser(id);
 
         // assert
+        Assertions.assertEquals(expected, actual);
         verify(this.userRepository, times(1)).findById(id);
-        verify(this.userRepository, times(1)).deleteById(id);
+        verify(this.userRepository, times(1)).save(user);
         verifyNoMoreInteractions(this.userRepository);
     }
 
     @Test
-    public void testDeleteUserNoSuchElementException() throws Exception {
+    public void testDeactivateUserResourceNotFoundException() throws Exception {
         // prepare test data
         Long id = 10L;
 
@@ -205,8 +212,8 @@ public class UserServiceUnitTest {
         String expectedMessage = String.format("User with id - %s not found", id);
 
         // act and assert
-        Exception exception = Assertions.assertThrows(NoSuchElementException.class, () -> {
-            this.userService.deleteUser(id);
+        Exception exception = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            this.userService.deactivateUser(id);
         });
 
         String actualMessage = exception.getMessage();

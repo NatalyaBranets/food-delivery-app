@@ -1,0 +1,2 @@
+insert into order_items (id, quantity, price, food_id, order_id) values (1, 5, 20.2, 1,'8805c848-b7a4-41e4-90d5-b9b4cf9a9a5b');
+insert into order_items (id, quantity, price, food_id, order_id) values (2, 2, 10.2, 2,'50c3a35d-2c40-4987-a9dd-7aaa987a79b4');

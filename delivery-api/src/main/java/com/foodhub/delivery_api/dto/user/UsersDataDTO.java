@@ -14,10 +14,6 @@ public record UsersDataDTO (
     boolean hasNext,
     boolean hasPrevious
 ) {
-    /**
-     * Shorthand constructor with page.
-     * @param userPage Page with users data. Must be set.
-     */
     public UsersDataDTO(Page<UserDTO> userPage) {
         this(userPage.getContent(),
                 userPage.getTotalElements(),

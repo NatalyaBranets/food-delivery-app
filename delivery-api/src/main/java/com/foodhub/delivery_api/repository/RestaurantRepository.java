@@ -8,11 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
-    Optional<Restaurant> findByNameAndAddress(String name, String address);
+    boolean existsByNameAndAddress(String name, String address);
 
     @Query("select new com.foodhub.delivery_api.dto.restaurant.RestaurantDTO(r.id, r.name, r.address, r.phone) from Restaurant r")
     Page<RestaurantDTO> findRestaurants(Pageable pageable);
@@ -23,4 +21,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
             or lower(r.address) like lower(concat('%', :query, '%'))
             """)
     Page<RestaurantDTO> findRestaurantsByQuery(String query, Pageable pageable);
+
+    boolean existsRestaurantById(Long restaurantId);
 }

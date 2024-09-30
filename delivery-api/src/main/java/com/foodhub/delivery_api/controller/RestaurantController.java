@@ -2,7 +2,7 @@ package com.foodhub.delivery_api.controller;
 
 import com.foodhub.delivery_api.dto.restaurant.CreateRestaurantRequestDTO;
 import com.foodhub.delivery_api.dto.restaurant.RestaurantDTO;
-import com.foodhub.delivery_api.dto.restaurant.RestaurantDataDTO;
+import com.foodhub.delivery_api.dto.restaurant.RestaurantsDataDTO;
 import com.foodhub.delivery_api.service.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,8 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public ResponseEntity<RestaurantDataDTO> getAllRestaurants(@RequestParam(name = "page", defaultValue = "1") Integer page,
-                                                               @RequestParam(name = "query", defaultValue = "") String query) {
+    public ResponseEntity<RestaurantsDataDTO> getAllRestaurants(@RequestParam(name = "page", defaultValue = "1") Integer page,
+                                                                @RequestParam(name = "query", defaultValue = "") String query) {
         if (query == null || query.trim().isEmpty()) {
             return ResponseEntity.ok(this.restaurantService.getAllRestaurants(page));
         }
@@ -39,14 +39,8 @@ public class RestaurantController {
 
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantDTO> updateRestaurant(@PathVariable("id") Long id,
-                                              @RequestBody @Valid CreateRestaurantRequestDTO request) {
+                                                          @RequestBody @Valid CreateRestaurantRequestDTO request) {
         RestaurantDTO updatedRestaurant = this.restaurantService.updateRestaurant(id, request);
         return ResponseEntity.ok(updatedRestaurant);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteRestaurant(@PathVariable("id") Long id) {
-        this.restaurantService.deleteRestaurant(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
