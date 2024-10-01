@@ -17,6 +17,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
+    private static final String[] PUBLIC_URL = {
+            "/v1/auth/**",
+            "/v1/users/register",
+            "/v1/users/verify",
+    };
+
     @Autowired
     private AuthenticationProvider authenticationProvider;
     @Autowired
@@ -27,7 +34,7 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers( "/v1/auth/**").permitAll();
+                    registry.requestMatchers( PUBLIC_URL).permitAll();
                     registry.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

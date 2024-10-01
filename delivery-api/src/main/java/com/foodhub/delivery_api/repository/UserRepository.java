@@ -14,11 +14,11 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
-    @Query("select new com.foodhub.delivery_api.dto.user.UserDTO(u.id, u.firstName, u.lastName, u.email, u.phone, u.address, u.isActive) from User u")
+    @Query("select new com.foodhub.delivery_api.dto.user.UserDTO(u.id, u.firstName, u.lastName, u.email, u.phone, u.address, u.verificationCode, u.isActive, u.isEnabled) from User u")
     Page<UserDTO> findUsers(Pageable pageable);
 
     @Query("""
-            select new com.foodhub.delivery_api.dto.user.UserDTO(u.id, u.firstName, u.lastName, u.email, u.phone, u.address, u.isActive) from User u
+            select new com.foodhub.delivery_api.dto.user.UserDTO(u.id, u.firstName, u.lastName, u.email, u.phone, u.address, u.verificationCode, u.isActive, u.isEnabled) from User u
             where lower(u.firstName) like lower(concat('%', :query, '%'))
             or lower(u.lastName) like lower(concat('%', :query, '%'))
             or lower(u.address) like lower(concat('%', :query, '%'))
@@ -26,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             or lower(u.phone) like lower(concat('%', :query, '%'))
             """)
     Page<UserDTO> findUsersByQuery(String query, Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE u.verificationCode = ?1")
+    Optional<User> findByVerificationCode(String code);
 }

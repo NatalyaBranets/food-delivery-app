@@ -25,3 +25,15 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration/structure, classpath:db/migration/data
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: branets.web.development@gmail.com
+    password: paneljfzapgcztvb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true

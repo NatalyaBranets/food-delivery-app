@@ -1,8 +1,10 @@
 package com.foodhub.delivery_api.service.impl;
 
+import com.foodhub.delivery_api.dto.user.RegisterUserRequestDTO;
 import com.foodhub.delivery_api.dto.user.UpdateUserRequestDTO;
 import com.foodhub.delivery_api.dto.user.UserDTO;
 import com.foodhub.delivery_api.dto.user.UsersDataDTO;
+import com.foodhub.delivery_api.enums.UserRole;
 import com.foodhub.delivery_api.exception.custom_exceptions.AlreadyExistsException;
 import com.foodhub.delivery_api.exception.custom_exceptions.PasswordMatchException;
 import com.foodhub.delivery_api.exception.custom_exceptions.ResourceNotFoundException;
@@ -11,9 +13,11 @@ import com.foodhub.delivery_api.model.User;
 import com.foodhub.delivery_api.repository.RoleRepository;
 import com.foodhub.delivery_api.repository.UserRepository;
 import com.foodhub.delivery_api.service.UserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +35,42 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+
+    @Override
+    public UserDTO register(RegisterUserRequestDTO request) {
+        // validate registration form
+        if (!request.password().equals(request.confirmPassword())) {
+            throw new PasswordMatchException("Password and confirm password does not match.");
+        }
+        Optional<User> userOptional = this.userRepository.findByEmail(request.email());
+        if (userOptional.isPresent()) {
+            throw new AlreadyExistsException(String.format("Email %s already exists", request.email()));
+        }
+
+        // create user
+        User user = new User();
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setEmail(request.email());
+        user.setPassword(this.passwordEncoder.encode(request.password()));
+        user.setAddress(request.address());
+        user.setPhone(request.phone());
+        user.setActive(true);
+        user.setEnabled(false);
+
+        Optional<Role> optionalRole = this.roleRepository.findByName(UserRole.USER);
+        optionalRole.ifPresent(role -> user.setRoles(new HashSet<>() {{
+            add(role);
+        }}));
+
+        String randomCode = RandomStringUtils.randomAlphanumeric(64);
+        user.setVerificationCode(randomCode);
+
+        // save user into db
+        User save = this.userRepository.save(user);
+        return new UserDTO(save);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -111,5 +151,26 @@ public class UserServiceImpl implements UserService {
         // update
         User savedUser = this.userRepository.save(user);
         return new UserDTO(savedUser);
+    }
+
+    @Override
+    public void deleteNotVerifiedUser(Long id) {
+        this.userRepository.deleteById(id);
+    }
+
+    @Override
+    public void verifyUser(String verificationCode) {
+        Optional<User> userOptional = this.userRepository.findByVerificationCode(verificationCode);
+        userOptional.ifPresentOrElse(
+                user -> {
+                    user.setEnabled(true);
+                    user.setVerificationCode(null);
+
+                    this.userRepository.save(user);
+                },
+                () -> {
+                    throw new UsernameNotFoundException(String.format("User with verification code %s not found", verificationCode));
+                }
+        );
     }
 }

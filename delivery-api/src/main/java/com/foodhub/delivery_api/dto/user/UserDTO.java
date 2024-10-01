@@ -9,7 +9,9 @@ public record UserDTO (
     String email,
     String phone,
     String address,
-    boolean isActive
+    String verificationCode,
+    boolean isActive,
+    boolean isEnabled
 ) {
     public UserDTO(User user) {
         this(user.getId(),
@@ -18,7 +20,9 @@ public record UserDTO (
                 user.getEmail(),
                 user.getPhone(),
                 user.getAddress(),
-                user.isActive()
+                user.getVerificationCode(),
+                user.isActive(),
+                user.isEnabled()
         );
     }
 }

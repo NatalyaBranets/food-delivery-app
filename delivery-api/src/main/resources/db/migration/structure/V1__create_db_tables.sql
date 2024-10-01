@@ -70,9 +70,11 @@ create table users
     email      varchar(255) not null unique,
     first_name varchar(30)  not null,
     is_active  boolean,
+    is_enabled  boolean,
     last_name  varchar(30)  not null,
     password   varchar(255) not null,
     phone      varchar(255) not null,
+    verification_code varchar(64),
     primary key (id)
 );
 

@@ -1,11 +1,11 @@
-package com.foodhub.delivery_api.dto.auth;
+package com.foodhub.delivery_api.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record RegisterUserRequestDTO(
+public record RegisterUserRequestDTO (
         @Size(min = 3, max = 30, message = "Invalid First Name: Must be of 3 - 30 characters")
         @NotEmpty(message = "First name should not be empty")
         String firstName,

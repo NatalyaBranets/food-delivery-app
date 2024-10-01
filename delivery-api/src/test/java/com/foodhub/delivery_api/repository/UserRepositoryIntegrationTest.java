@@ -60,4 +60,16 @@ public class UserRepositoryIntegrationTest {
         assertEquals(0, actual.getTotalPages());
     }
 
+    @Test
+    public void testFindByVerificationCode() {
+        // prepare test data
+        String verificationCode = "hgTyfgYYghttyfghgTyfgYY";
+
+        // act
+        Optional<User> actual = this.userRepository.findByVerificationCode(verificationCode);
+
+        // assert
+        assertTrue(actual.isEmpty());
+    }
+
 }
